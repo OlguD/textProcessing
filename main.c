@@ -8,7 +8,7 @@ struct Text{
 
 int getTextSize(char *text);
 int getWordCount(char *text);
-
+int getCharCount(char *text);
 
 int main() {
     struct Text text;
@@ -20,10 +20,14 @@ int main() {
 
     printf("Enter a sentence: ");
     fgets(text.text, 256, stdin);
+    
+    int countWord = getWordCount(text.text);
+    int countChar = getCharCount(text.text);
 
-    int count = getWordCount(text.text);
-
-    printf("\nCount: %d\n", count);
+    
+    printf("\nWord Count: %d\n", countWord);
+    printf("Char Count: %d\n", countChar);
+    free(text.text);
     return 0;
 }
 
@@ -35,13 +39,24 @@ int getWordCount(char *text){
     int wordCount = 0;
     int textSize = getTextSize(text);
     for (int i=0; i<textSize; i++){
-        if (text[i] == '\0' && text[i + 1] == '\0'){
-            break;
-        } else{
-            if (text[i] != '\0'){
-                wordCount += 1;
-            }
+        if ((text[i] == ' ' || text[i] == '\n' || text[i] == '\t') && (i > 0 && text[i - 1] != ' ' && text[i - 1] != '\n' && text[i - 1] != '\t')) {
+            wordCount++;
+        }
+
+        // To count the last word if the string does not end with space
+        if (textSize > 0 && text[textSize - 1] != ' ' && text[textSize - 1] != '\n' && text[textSize - 1] != '\t') {
+            wordCount++;
         }
     }
     return wordCount;
+}
+
+int getCharCount(char *text){
+    int charCount = 0;
+    for (int i=0; text[i]; i++){
+        if (text[i] != ' ' && text[i] != '\0'){
+            charCount ++;
+        }
+    }
+    return charCount - 1; 
 }
